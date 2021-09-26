@@ -54,15 +54,32 @@ pipeline {
         git branch: 'master', credentialsId: 'jenkins-private-key', url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
         sh "git checkout master"
         sh "git checkout -b develop"
+
+      }
+
+    }
+
+    stage('Edit Manifests'){
+      steps{
         sh " sed -i \'s/%chartver%/1.${BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
-        sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml && cat ./cert-app/Chart.yaml"
+        sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml && cat ./cert-app/Chart.yaml"        
+      }
+
+    }
+
+    stage('Helm Package'){
+      steps{
         container('helm'){
             sh "helm lint ./cert-app/"
             sh "helm package ./cert-app/ "
-        }
+        }        
+      }
+    }
+
+    stage('Push Manifest Changes'){
+      steps{
         sh "git config --global user.email 'poyrazogluo@itu.edu.tr'"
         sh "git config --global user.name 'ozkan'"
-        // sh "git checkout develop"
         sh "git add ."
         sh "git commit -m 'Updated version.properties file with ${env.BUILD_NUMBER}'" 
         withCredentials([usernamePassword(credentialsId: 'test-jenkins-access-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
@@ -70,10 +87,9 @@ pipeline {
                             git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
                             git push origin develop -f
                         ''')
-                    }
-        
-        
+                    }          
       }
+
     }
   }
 }
