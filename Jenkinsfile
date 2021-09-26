@@ -31,6 +31,7 @@ pipeline {
   } 
     environment {
         DOCKER_CRED = credentials('dockerpass')
+        GITHUB_CRED = credentials('github')
     }
   
   stages {
@@ -60,9 +61,10 @@ pipeline {
           sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
           sh " git config --global user.email 'poyrazogluo@itu.edu.tr' "
           sh " git config --global user.name 'Ozkan Poyrazoglu' "
+          sh " git checkout -b develop"
           sh " git add . "
           sh " git commit -m 'version added.' "
-          sh " git push origin master:develop"
+          sh " git push https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/ozkanpoyrazoglu/certapp-test.git"
         }
       }
     }
