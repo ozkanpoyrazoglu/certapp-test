@@ -35,10 +35,16 @@ pipeline {
     }
   
   stages {
+
+    stage('Checkout App'){
+      steps{
+        git 'https://github.com/ozkanpoyrazoglu/certificate-debugapp.git'
+      }
+    }
+
     stage('Build Docker Image') {
       steps {
         container('docker') {
-          git 'https://github.com/ozkanpoyrazoglu/certificate-debugapp.git'
           sh 'echo username ${DOCKER_CRED_USR}'    
           sh 'echo password ${DOCKER_CRED_PSW}'  
           sh 'docker login -u ${DOCKER_CRED_USR} -p ${DOCKER_CRED_PSW}'
