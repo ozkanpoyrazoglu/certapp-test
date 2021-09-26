@@ -54,6 +54,10 @@ pipeline {
         git branch: 'master', credentialsId: 'jenkins-private-key', url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
         sh " sed -i \'s/%chartver%/1.${BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
         sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml && cat ./cert-app/Chart.yaml"
+        container('helm'){
+            sh "helm lint ./cert-app/"
+            sh "helm package ./cert-app/ "
+        }
         sh "git config --global user.email 'poyrazogluo@itu.edu.tr'"
         sh "git config --global user.name 'ozkan'"
         sh "git checkout develop"
@@ -65,11 +69,7 @@ pipeline {
                             git push origin develop
                         ''')
                     }
-        container('helm'){
-
-          
-          sh " echo ozkan "
-        }
+        
         
       }
     }
