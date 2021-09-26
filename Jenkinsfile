@@ -51,7 +51,7 @@ pipeline {
 
     stage('Checkout Manifests') {
       steps{
-        git branch: 'main', credentialsId: 'jenkins-private-key', url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
+        git branch: 'master', credentialsId: 'jenkins-private-key', url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
         sh " sed -i \'s/%chartver%/1.${BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
         sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml && cat ./cert-app/Chart.yaml"
         sh "git config --global user.email 'poyrazogluo@itu.edu.tr'"
