@@ -61,7 +61,7 @@ pipeline {
         }
         sh "git config --global user.email 'poyrazogluo@itu.edu.tr'"
         sh "git config --global user.name 'ozkan'"
-        sh "git checkout develop"
+        // sh "git checkout develop"
         sh "git add ."
         sh "git commit -m 'Updated version.properties file with ${env.BUILD_NUMBER}'" 
         withCredentials([usernamePassword(credentialsId: 'test-jenkins-access-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
