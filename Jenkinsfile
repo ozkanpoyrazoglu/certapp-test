@@ -51,27 +51,29 @@ pipeline {
 
     stage('Checkout Manifests') {
       steps{
-        container('helm'){
-          git branch: 'master',
-                credentialsId: 'github',
-                url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
-
-          sh " ls && pwd "
-          sh " sed -i \'s/%chartver%/1.${env.BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
-          sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
-          sh " git config --global user.email 'poyrazogluo@itu.edu.tr' "
-          sh " git config --global user.name 'Ozkan Poyrazoglu' "
-          sh " git checkout -b develop"
-          sh " git add . "
-          sh " git commit -m 'version added.' "
-          // sh " git push https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/ozkanpoyrazoglu/certapp-test.git"''
-          withCredentials([usernamePassword($class: 'UsernamePasswordMultiBinding', credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ozkanpoyrazoglu/certapp-test.git')
+        git branch: 'main', credentialsId: 'jenkins-private-key', url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
+        sh " sed -i \'s/%chartver%/1.${env.BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
+        sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
+        sh "git config --global user.email 'poyrazogluo@itu.edu.tr'"
+        sh "git config --global user.name 'ozkan'"
+        sh "git checkout develop"
+        sh "git add ."
+        sh "git commit -m 'Updated version.properties file with ${env.BUILD_NUMBER}'" 
+        withCredentials([usernamePassword(credentialsId: 'test-jenkins-access-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
+                        sh('''
+                            git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
+                            git push origin develop
+                        ''')
                     }
+        container('helm'){
+
+          
+          sh " echo ozkan "
         }
         
       }
     }
   }
 }
+
 
