@@ -51,9 +51,12 @@ pipeline {
     stage('Checkout Manifests') {
       steps{
         container('helm'){
+          git 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
           sh " ls && pwd "
-          // sh " sed -i \'s/%chartver%/1.${env.BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
-          // sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
+          sh " sed -i \'s/%chartver%/1.${env.BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
+          sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
+          sh " git config --global user.email 'poyrazogluo@itu.edu.tr' "
+          sh " git config --global user.name 'Ozkan Poyrazoglu' "
           sh " git add . "
           sh " git commit -m 'version added.' "
           sh " git push origin master:develop"
