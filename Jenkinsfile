@@ -51,8 +51,9 @@ pipeline {
     stage('Checkout Manifests') {
       steps{
         container('helm'){
-          sh " sed -i \'s/%chartver%/1.${env.BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
-          sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
+          sh " ls && pwd "
+          // sh " sed -i \'s/%chartver%/1.${env.BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
+          // sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml "
           sh " git add . "
           sh " git commit -m 'version added.' "
           sh " git push origin master:develop"
