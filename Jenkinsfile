@@ -64,8 +64,11 @@ pipeline {
           sh " git checkout -b develop"
           sh " git add . "
           sh " git commit -m 'version added.' "
-          sh " git push https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/ozkanpoyrazoglu/certapp-test.git"
+          // sh " git push https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/ozkanpoyrazoglu/certapp-test.git"
         }
+        withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ozkanpoyrazoglu/certapp-test.git')
+                    }
       }
     }
   }
