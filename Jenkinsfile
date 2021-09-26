@@ -52,7 +52,7 @@ pipeline {
     stage('Checkout Manifests') {
       steps{
         git branch: 'master', credentialsId: 'jenkins-private-key', url: 'https://github.com/ozkanpoyrazoglu/certapp-test.git'
-        sh "git checkout develop"
+        // sh "git checkout develop"
         sh " sed -i \'s/%chartver%/1.${BUILD_NUMBER}.0/g\' ./cert-app/Chart.yaml "
         sh " sed -i \'s/%appver%/0.1.${BUILD_NUMBER}/g\' ./cert-app/Chart.yaml && cat ./cert-app/Chart.yaml"
         container('helm'){
@@ -67,7 +67,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'test-jenkins-access-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
                         sh('''
                             git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
-                            git push origin develop
+                            git push origin master:develop
                         ''')
                     }
         
