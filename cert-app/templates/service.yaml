@@ -7,9 +7,8 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: 5000
+      targetPort: 5000
       protocol: TCP
-      name: http
   selector:
     {{- include "cert-app.selectorLabels" . | nindent 4 }}
